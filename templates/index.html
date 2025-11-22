@@ -44,20 +44,19 @@
             <div class="card shadow result-card p-4 mt-4">
 
                 <h4 class="fw-bold">
-                    📊 Sonuç: 
+                    📊 Sonuç:
                     <span class="prediction">{{ result }}</span>
                 </h4>
-
-                <p class="mt-2">
-                    Güven düzeyi: <b>{{ probability }}</b>
-                </p>
 
                 {% if image_data %}
                 <img src="data:image/png;base64,{{ image_data }}"
                 class="img-fluid rounded mt-3"
                 alt="Yüklenen Görüntü">
                 {% endif %}
-                
+
+                <p class="text-muted small mt-3">
+                    ⚠️ Bu model yalnızca bir karar destek aracıdır, hekim değerlendirmesinin yerine geçmez.
+                </p>
 
             </div>
             {% endif %}
@@ -69,4 +68,3 @@
 
 </body>
 </html>
-
