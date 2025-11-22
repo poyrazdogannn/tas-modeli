@@ -53,9 +53,11 @@
                 </p>
 
                 {% if image_data %}
-                <img src="data:image/png;base64,{{ image_data|b64encode }}" 
-                     class="img-fluid rounded mt-3" alt="Yüklenen Görüntü">
+                <img src="data:image/png;base64,{{ image_data }}"
+                class="img-fluid rounded mt-3"
+                alt="Yüklenen Görüntü">
                 {% endif %}
+                
 
             </div>
             {% endif %}
@@ -67,3 +69,4 @@
 
 </body>
 </html>
+
