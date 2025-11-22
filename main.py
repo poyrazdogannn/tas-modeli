@@ -23,8 +23,7 @@ input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 
-def load_dicom(uploaded):
-    data = uploaded.read()
+def load_dicom_bytes(data: bytes):
     ds = pydicom.dcmread(io.BytesIO(data))
     arr = ds.pixel_array.astype(np.float32)
     arr = arr - np.min(arr)
@@ -35,8 +34,9 @@ def load_dicom(uploaded):
     return img
 
 
-def load_image(uploaded):
-    return Image.open(uploaded).convert("RGB")
+def load_image_bytes(data: bytes):
+    img = Image.open(io.BytesIO(data)).convert("RGB")
+    return img
 
 
 def preprocess(img):
@@ -66,21 +66,31 @@ async def home(request: Request):
 @app.post("/predict")
 async def predict_view(request: Request, file: UploadFile = File(...)):
     filename = file.filename.lower()
-    if filename.endswith(".dcm"):
-        img = load_dicom(file)
-    else:
-        img = load_image(file)
 
+    # Dosyayı bayt olarak oku (async!)
+    file_bytes = await file.read()
+
+    # Uzantıya göre DICOM mu, normal resim mi karar ver
+    if filename.endswith(".dcm"):
+        img = load_dicom_bytes(file_bytes)
+    else:
+        img = load_image_bytes(file_bytes)
+
+    # Model için hazırlık
     arr = preprocess(img)
     label, prob, probs = predict(arr)
 
+    # Görüntüyü tekrar PNG'ye çevirip base64 olarak sayfada göstermek için
     img_bytes = io.BytesIO()
     img.save(img_bytes, format="PNG")
     image_base = img_bytes.getvalue()
 
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "result": label,
-        "probability": f"%{prob*100:.1f}",
-        "image_data": image_base
-    })
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "result": label,
+            "probability": f"%{prob*100:.1f}",
+            "image_data": image_base,
+        },
+    )
