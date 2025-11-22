@@ -1,0 +1,24 @@
+body {
+    background-color: #f4f7fb;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 32px;
+}
+
+.subtitle {
+    font-size: 15px;
+    color: #4a4a4a;
+}
+
+.upload-card, .result-card {
+    border-radius: 14px;
+    background: white;
+}
+
+.prediction {
+    font-size: 22px;
+    color: #005fcc;
+}
